@@ -1,65 +1,42 @@
 # import the necessary packages
-from collections import deque
-import numpy as np
-import argparse
 import cv2
 import os
-from functools import partial
-from http.server import BaseHTTPRequestHandler, HTTPServer
-import threading
 
-thex = -1
-they = -1
-
-class Pos(threading.Thread):	
+class Pos():	
 	def __init__(self):
-		threading.Thread.__init__(self)
-		print('started thread')
+		self.run()
+		print('started')
 				
 	def run(self):
-		global thex
-		global they
-		ap = argparse.ArgumentParser()
-		ap.add_argument("-v", "--video", help="path to the (optional) video file")
-		ap.add_argument("-b", "--buffer", type=int, default=64, help="max buffer size")
-		args = vars(ap.parse_args())
-		colorLower = (164, 100, 100)
-		colorUpper = (184, 255, 255)
-		pts = deque(maxlen=args["buffer"])
+		robotColorLower = (164, 100, 100) # red
+		robotColorUpper = (184, 255, 255) # red
+		dirColorLower = (24, 100, 100) # yellow
+		dirColorUpper = (44, 255, 255) # yellow
 		camera = cv2.VideoCapture(0)
 		while True:
 			(grabbed, frame) = camera.read()
 			hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-			mask = cv2.inRange(hsv, colorLower, colorUpper)
-			mask = cv2.erode(mask, None, iterations=2)
-			mask = cv2.dilate(mask, None, iterations=2)
-			cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
-			thex = -1
-			they = -1
-			if len(cnts) > 0:
-				c = max(cnts, key=cv2.contourArea)
-				((x, y), radius) = cv2.minEnclosingCircle(c)
-				M = cv2.moments(c)
-				thex = int(M["m10"] / M["m00"])
-				they = int(M["m01"] / M["m00"])
-			#print(thex,they)
-						
-class MyHTTPServer(HTTPServer):
-	def __init__(self, *args, **kwargs):
-		HTTPServer.__init__(self, *args, **kwargs)
-		self.pos = Pos()
-		self.pos.start()
-
-class RequestHandler(BaseHTTPRequestHandler):
-	def do_GET(self):
-		self.send_response(200)
-		self.end_headers()
-		output = "{x:" + str(thex) + ",y:" + str(they) + "}"
-		self.wfile.write(output.encode())
-		return
+			robotMask = cv2.inRange(hsv, robotColorLower, robotColorUpper)
+			robotMask = cv2.erode(robotMask, None, iterations=2)
+			robotMask = cv2.dilate(robotMask, None, iterations=2)
+			robotCenter = cv2.findContours(robotMask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
+			dirMask = cv2.inRange(hsv, dirColorLower, dirColorUpper)
+			dirMask = cv2.erode(dirMask, None, iterations=2)
+			dirMask = cv2.dilate(dirMask, None, iterations=2)
+			dirCenter = cv2.findContours(dirMask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
+			rX = -1
+			rY = -1
+			dX = -1
+			dY = -1
+			if len(robotCenter) > 0 and len(dirCenter) > 0 :
+				rM = cv2.moments(max(robotCenter, key=cv2.contourArea))
+				rX = round(rM["m10"] / rM["m00"] / 10)
+				rY = round(rM["m01"] / rM["m00"] / 10)
+				dM = cv2.moments(max(dirCenter, key=cv2.contourArea))
+				dX = round(dM["m10"] / dM["m00"] / 10)
+				dY = round(dM["m01"] / dM["m00"] / 10)
+			print(rX,rY,dX,dY)
 
 if __name__ == '__main__':
 	os.system("sudo modprobe bcm2835-v4l2")
-	server = MyHTTPServer(('', 8000), RequestHandler)
-	print('Starting server at port 8000')
-	server.serve_forever()
+	Pos()

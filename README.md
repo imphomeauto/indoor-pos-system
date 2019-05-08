@@ -12,9 +12,15 @@ in order to run the script, you must have
 - Raspbian Stretch
 - OpenCV module (see references)
 
-start the script with `python3 iha_ips_console.py`
+start the positioning system with `python3 iha_ips_web.py`
 
-open the browser to  `http://<ip_of_your_raspberry>:8000`
+position can be read at the address  `http://<ip_of_your_raspberry>:8000`
+
+### Other commands
+
+get the real-time position in the console `python3 iha_ips_console.py`
+
+get the position with the frame, useful to map the color of the object (you must run this in the Desktop Env, or in VNC) `python3 iha_ips_frame.py`
 
 #### References
 
