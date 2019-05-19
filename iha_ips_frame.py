@@ -1,9 +1,3 @@
-'''
-Object detection ("Ball tracking") with OpenCV
-    Adapted from the original code developed by Adrian Rosebrock
-    Visit original post: https://www.pyimagesearch.com/2015/09/14/ball-tracking-with-opencv/
-Developed by Marcelo Rovai - MJRoBot.org @ 7Feb2018 
-'''
 
 # import the necessary packages
 from collections import deque
@@ -22,8 +16,8 @@ args = vars(ap.parse_args())
 # define the lower and upper boundaries of the "yellow object"
 # (or "ball") in the HSV color space, then initialize the
 # list of tracked points
-colorLower = (164, 100, 100)
-colorUpper = (184, 255, 255)
+colorLower = (169, 100, 100)
+colorUpper = (189, 255, 255)
 pts = deque(maxlen=args["buffer"])
  
 # if a video path was not supplied, grab the reference

@@ -8,10 +8,10 @@ class Pos():
 		print('started')
 				
 	def run(self):
-		robotColorLower = (164, 100, 100) # red
-		robotColorUpper = (184, 255, 255) # red
-		dirColorLower = (24, 100, 100) # yellow
-		dirColorUpper = (44, 255, 255) # yellow
+		robotColorLower = (169, 100, 100) # red
+		robotColorUpper = (189, 255, 255) # red
+		dirColorLower = (84, 100, 100) # cyan
+		dirColorUpper = (106, 255, 255) # cyan
 		camera = cv2.VideoCapture(0)
 		while True:
 			(grabbed, frame) = camera.read()
@@ -28,14 +28,24 @@ class Pos():
 			rY = -1
 			dX = -1
 			dY = -1
-			if len(robotCenter) > 0 and len(dirCenter) > 0 :
+			dir = 'R'
+			if len(robotCenter) > 0 :
 				rM = cv2.moments(max(robotCenter, key=cv2.contourArea))
 				rX = round(rM["m10"] / rM["m00"] / 10)
 				rY = round(rM["m01"] / rM["m00"] / 10)
+			if len(dirCenter) > 0 :
 				dM = cv2.moments(max(dirCenter, key=cv2.contourArea))
 				dX = round(dM["m10"] / dM["m00"] / 10)
 				dY = round(dM["m01"] / dM["m00"] / 10)
-			print(rX,rY,dX,dY)
+				if round(dM["m10"] / dM["m00"] / 10 - 2) > rX :
+					dir = 'R'
+				elif round(dM["m10"] / dM["m00"] / 10 + 2) < rX :
+					dir = 'L'
+				elif round(dM["m01"] / dM["m00"] / 10 - 2) > rY :
+					dir = 'D'
+				elif round(dM["m01"] / dM["m00"] / 10 + 2) < rY :
+					dir = 'U'
+			print(rX,rY,dX,dY,dir)
 
 if __name__ == '__main__':
 	os.system("sudo modprobe bcm2835-v4l2")
