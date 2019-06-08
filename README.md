@@ -12,13 +12,14 @@ in order to run the script, you must have
 - Raspbian Stretch
 - OpenCV module (see references)
 
-start the positioning system with `python3 iha_ips_web.py`
-
-position can be read at the address  `http://<ip_of_your_raspberry>:8000`
+start the positioning system with `python3 iha_ips_ws.py`
+the robot will take the position at the socket address `<ip_of_your_raspberry>:8000`
 
 ### Other commands
 
 get the real-time position in the console `python3 iha_ips_console.py`
+
+get the real-time position in the web server `python3 iha_ips_web.py` position can be read at the address `http://<ip_of_your_raspberry>:8000`
 
 get the position with the frame, useful to map the color of the object (you must run this in the Desktop Env, or in VNC) `python3 iha_ips_frame.py`
 
