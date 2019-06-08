@@ -7,7 +7,7 @@ import threading
 
 rX = -1
 rY = -1
-dir = 'R'
+dir = '-'
 
 # ouput { x: 10, y: 11, dir: "R" }
 
@@ -38,7 +38,7 @@ class Pos(threading.Thread):
 	def run(self):
 		global rX
 		global rY
-		global direction
+		global dir
 		robotColorLower = (154, 100, 100) # red
 		robotColorUpper = (174, 255, 255) # red
 		dirColorLower = (90, 100, 100) # cyan
@@ -57,6 +57,7 @@ class Pos(threading.Thread):
 			dirCenter = cv2.findContours(dirMask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
 			rX = -1
 			rY = -1
+			dir = '-'
 			if len(robotCenter) > 0:
 				rM = cv2.moments(max(robotCenter, key=cv2.contourArea))
 				rX = round(rM["m10"] / rM["m00"] / 10)
