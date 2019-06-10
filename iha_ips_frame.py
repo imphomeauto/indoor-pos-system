@@ -39,6 +39,19 @@ while True:
 	if args.get("video") and not grabbed:
 		break
 	
+	cv2.circle(frame, (15,15), 8, (0, 255, 0), -1)
+	cv2.circle(frame, (625,15), 8, (0, 255, 0), -1)
+	cv2.circle(frame, (15,465), 8, (0, 255, 0), -1)
+	cv2.circle(frame, (625,465), 8, (0, 255, 0), -1)
+
+	cv2.circle(frame, (280,15), 8, (0, 255, 0), -1)
+	cv2.circle(frame, (15,210), 8, (0, 255, 0), -1)
+	cv2.circle(frame, (625,210), 8, (0, 255, 0), -1)
+	cv2.circle(frame, (280,210), 8, (0, 255, 0), -1)
+
+	cv2.circle(frame, (130,210), 8, (0, 255, 0), -1)
+	cv2.circle(frame, (440,210), 8, (0, 255, 0), -1)
+
 	# blurred = cv2.GaussianBlur(frame, (11, 11), 0)
 	hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
  
