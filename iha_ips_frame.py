@@ -24,7 +24,9 @@ pts = deque(maxlen=args["buffer"])
 # to the webcam
 if not args.get("video", False):
 	camera = cv2.VideoCapture(0)
- 
+	camera.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
+	camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 120)
+	camera.set(cv2.CAP_PROP_FPS, 40)
 # otherwise, grab a reference to the video file
 else:
 	camera = cv2.VideoCapture(args["video"])

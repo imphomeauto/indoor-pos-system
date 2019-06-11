@@ -3,17 +3,16 @@ import cv2
 import os
 import socket
 from time import sleep
-import threading
+from threading import Thread
 
 rX = -1
 rY = -1
 
-# ouput: 010,011
+# ouput: 02,11
 
 def server():
 	# create TCP/IP socket
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	# retrieve local hostname
 	server_address = ('ips.local', 8000)
 	sock.bind(server_address)
 	sock.listen(1)
@@ -23,23 +22,27 @@ def server():
 			while True:
 				message = ('%02d' % rX) + ',' + ('%02d' % rY)
 				connection.sendall( message.encode() )
-				sleep(.04)
+				sleep(.01)
 				
 		finally:
 			# Clean up the connection
 			connection.close()
 
-class Pos(threading.Thread):	
+class Pos(Thread):	
 	def __init__(self):
-		threading.Thread.__init__(self)
+		Thread.__init__(self)
 		print('started thread')
 				
 	def run(self):
 		global rX
 		global rY
-		robotColorLower = (146, 100, 100) # red
-		robotColorUpper = (166, 255, 255) # red
+		count = 0
+		robotColorLower = (-6, 100, 100) # red
+		robotColorUpper = (14, 255, 255) # red
 		camera = cv2.VideoCapture(0)
+		camera.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
+		camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
+		#camera.set(cv2.CAP_PROP_FPS, 40)
 		while True:
 			(grabbed, frame) = camera.read()
 			hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
@@ -50,10 +53,11 @@ class Pos(threading.Thread):
 			rX = -1
 			rY = -1
 			if len(robotCenter) > 0:
+				count = count + 1;
 				rM = cv2.moments(max(robotCenter, key=cv2.contourArea))
 				rX = round(rM["m10"] / rM["m00"] / 25)
 				rY = round(rM["m01"] / rM["m00"] / 25)
-				print('x: %s - y: %s' % (rX, rY))
+				print('%s,%s - %s' % (rX, rY, count))
 
 if __name__ == '__main__':
 	os.system("sudo modprobe bcm2835-v4l2")
