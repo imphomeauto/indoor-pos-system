@@ -37,8 +37,10 @@ class Pos(Thread):
 		global rX
 		global rY
 		count = 0
-		robotColorLower = (-6, 100, 100) # red
-		robotColorUpper = (14, 255, 255) # red
+		#robotColorLower = (-6, 100, 100) # orange
+		#robotColorUpper = (14, 255, 255) # orange
+		robotColorLower = (71, 100, 100) # green
+		robotColorUpper = (91, 255, 255) # green
 		camera = cv2.VideoCapture(0)
 		camera.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
 		camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
